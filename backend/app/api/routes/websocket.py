@@ -2,6 +2,8 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from typing import List
 import json
 import time
+from app.db.repositories.incident_repo import IncidentRepository
+from app.db.database import get_db
 
 router = APIRouter()
 
@@ -46,3 +48,13 @@ async def broadcast_message(message: str):
         "timestamp": time.time()
     }))
     return {"success": True, "message": "Message broadcasted"}
+
+# Endpoint to send real-time incident updates
+@router.post("/send_incident_update")
+async def send_incident_update(incident_data: dict):
+    await manager.broadcast(json.dumps({
+        "type": "new_incident",
+        "incident": incident_data,
+        "timestamp": time.time()
+    }))
+    return {"success": True, "message": "Incident update sent"}

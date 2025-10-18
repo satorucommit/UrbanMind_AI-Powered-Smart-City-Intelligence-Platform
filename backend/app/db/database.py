@@ -3,13 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Database URL - in production, use environment variables
-SQLALCHEMY_DATABASE_URL = os.getenv(
-    "DATABASE_URL", 
-    "postgresql://user:password@localhost/urbanmind"
-)
+# Using SQLite for easier setup - in production, use PostgreSQL
+SQLALCHEMY_DATABASE_URL = "sqlite:///./urbanmind.db"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
